@@ -5,10 +5,54 @@
 // Copyright(C) 2015, Chenbjin. All rights reserved.
 //
 #include <iostream>
+#include <string>
+#include <boost/algorithm/string.hpp>
+#include "Interpreter.h"
 using namespace std;
+
+void Welcome();
 
 int main()
 {
-	cout << "Hello world!" << endl;
+	Welcome();
+	string sql;			//sql statement
+	string line;        //input line
+	size_t end;         //end pos
+	Interpreter BeetleInterpreter;
+
+	while (true)
+	{
+		cout << endl << "BeetleDB> ";
+		getline(cin, line);
+		
+		sql = string(line);
+		if (sql == "") { continue; } /* Only is an empty input line */
+
+		boost::algorithm::trim(sql);  /* remove blank ahead or behind of the sql */
+
+		if (sql.compare(0,4,"exit") == 0 || sql.compare(0,4,"quit") == 0 || sql.compare(0,2,"\\q") == 0 || sql.compare(0,2,"\\e") == 0)
+		{
+			BeetleInterpreter.ExecSQL("quit");
+			break;
+		}
+
+		while ((end = sql.find(";")) == string::npos) /* not end */
+		{
+			cout <<"       -> ";
+			getline(cin, line);
+			if (line == "") { continue; } /* Only is an empty input line */
+			sql += "\n" + string(line);
+		}
+		
+		BeetleInterpreter.ExecSQL(sql);  /* Execute sql statement */
+		cout << endl;
+	}
+	system("pause");
 	return 0;
+}
+
+void Welcome()
+{
+	cout << "Welcome to the BeetleDB. Commands end with ';'." << endl;
+	cout <<	"Type 'help;' for help. Type 'clear' to clear the current input statement." << endl;
 }

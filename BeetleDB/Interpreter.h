@@ -5,10 +5,30 @@
 // Copyright(C) 2015, Chenbjin. All rights reserved.
 //
 #pragma once
+#ifndef _INTERPRETER_H_
+#define _INTERPRETER_H_
+
+#include <string>
+#include <vector>
+#include "API.h"
+
+using namespace std;
+
 class Interpreter
 {
 public:
 	Interpreter(void);
 	~Interpreter(void);
+	void ExecSQL(string statement);
+private:
+	API* api;
+	string sql_statement_;
+	vector<string> sql_vector_;
+	int sql_type_;
+	vector<string> SplitSQL(string statement);
+	void GeneralizeSQL();
+	void GetSQLType();
+	void ParseSQL();
 };
 
+#endif
