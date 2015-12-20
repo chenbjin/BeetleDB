@@ -81,14 +81,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="API.cpp" />
+    <ClCompile Include="BufferManager.cpp" />
+    <ClCompile Include="CatalogManager.cpp" />
     <ClCompile Include="Exceptions.cpp" />
+    <ClCompile Include="IndexManager.cpp" />
     <ClCompile Include="Interpreter.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RecordManager.cpp" />
+    <ClCompile Include="SQLStatement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API.h" />
+    <ClInclude Include="BufferManager.h" />
+    <ClInclude Include="CatalogManager.h" />
     <ClInclude Include="Exceptions.h" />
+    <ClInclude Include="IndexManager.h" />
     <ClInclude Include="Interpreter.h" />
+    <ClInclude Include="RecordManager.h" />
+    <ClInclude Include="SQLStatement.h" />
+    <ClInclude Include="StaticValue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

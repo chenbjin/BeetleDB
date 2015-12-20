@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include "API.h"
+#include "SQLStatement.h"
 
 using namespace std;
 
