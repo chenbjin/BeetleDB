@@ -18,17 +18,17 @@ API::~API(void)
 
 void API::Quit(){}
 void API::Help(){}
-void API::CreateDatabase(){}
-void API::CreateTable(){}
-void API::CreateIndex(){}
+void API::CreateDatabase(SQLCreateDatabase& statement){}
+void API::CreateTable(SQLCreateTable& statement){}
+void API::CreateIndex(SQLCreateIndex& statement){}
 void API::ShowDatabases(){}
 void API::ShowTables(){}
-void API::DropDatabase(){}
-void API::DropTable(){}
-void API::DropIndex(){}
-void API::Use(){}
-void API::Insert(){}
-void API::Exec(){}
-void API::Select(){}
-void API::Delete(){}
-void API::Update(){}
+void API::DropDatabase(SQLDropDatabase& statement){}
+void API::DropTable(SQLDropTable& statement){}
+void API::DropIndex(SQLDropIndex& statement){}
+void API::Use(SQLUse& statement){}
+void API::Insert(SQLInsert& statement){}
+void API::Exec(SQLExec& statement){}
+void API::Select(SQLSelect& statement){}
+void API::Delete(SQLDelete& statement){}
+void API::Update(SQLUpdate& statement){}

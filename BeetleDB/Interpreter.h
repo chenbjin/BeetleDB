@@ -26,7 +26,7 @@ private:
 	string sql_statement_;
 	vector<string> sql_vector_;
 	int sql_type_;
-	vector<string> SplitSQL(string statement);
+	vector<string> SplitSQL(string statement, string seg);
 	void GeneralizeSQL();
 	void GetSQLType();
 	void ParseSQL();

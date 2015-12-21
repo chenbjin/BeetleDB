@@ -20,23 +20,27 @@ using namespace std;
 
 Interpreter::Interpreter(void) : sql_type_(-1)
 {
-	//string path = string(getenv("DBHOME")) + "/BeetleDBData/";
-	string path = "/BeetleDBData/";
+	string path;
+	if (getenv("DBHOME"))
+		path = string(getenv("DBHOME")) + "/BeetleDBData/";
+	else
+		path = "D:/BeetleDBData/";
+	//string path = "/BeetleDBData/";
 	api = new API(path);
 }
 
 Interpreter::~Interpreter(void) { delete api; }
 
-vector<string> Interpreter::SplitSQL(string statement)
+vector<string> Interpreter::SplitSQL(string statement, string seg)
 {
 	char* cstr = const_cast<char*>(statement.c_str());
 	char* current;
 	vector<string> arr;
-	current = strtok(cstr," ");
+	current = strtok(cstr,seg.c_str());
 	while (current != NULL)
 	{
 		arr.push_back(current);
-		current = strtok(NULL," ");
+		current = strtok(NULL, seg.c_str());
 	}
 	return arr;
 }
@@ -71,7 +75,7 @@ void Interpreter::GeneralizeSQL()
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, ">=");
 	
 	// split sql_statement_
-	sql_vector_ = SplitSQL(sql_statement_);
+	sql_vector_ = SplitSQL(sql_statement_, " ");
 }
 
 void Interpreter::GetSQLType()
@@ -135,13 +139,25 @@ void Interpreter::ParseSQL()
 			api->Help();
 			break;
 		case 30:
-			api->CreateDatabase();
+		{
+			SQLCreateDatabase *st = new SQLCreateDatabase(sql_vector_);
+			api->CreateDatabase(*st);
+			delete st;
+		}
 			break;
 		case 31:
-			api->CreateTable();
+		{
+			SQLCreateTable *st = new SQLCreateTable(sql_vector_);
+			api->CreateTable(*st);
+			delete st;
+		}
 			break;
 		case 32:
-			api->CreateIndex();
+		{
+			SQLCreateIndex *st = new SQLCreateIndex(sql_vector_);
+			api->CreateIndex(*st);
+			delete st;
+		}
 			break;
 		case 40:
 			api->ShowDatabases();
@@ -150,31 +166,78 @@ void Interpreter::ParseSQL()
 			api->ShowTables();
 			break;
 		case 50:
-			api->DropDatabase();
+		{
+			SQLDropDatabase *st = new SQLDropDatabase(sql_vector_);
+			api->DropDatabase(*st);
+			delete st;
+		}
 			break;
 		case 51:
-			api->DropTable();
+		{
+			SQLDropTable *st = new SQLDropTable(sql_vector_);
+			api->DropTable(*st);
+			delete st;
+		}
 			break;
 		case 52:
-			api->DropIndex();
+		{
+			SQLDropIndex *st = new SQLDropIndex(sql_vector_);
+			api->DropIndex(*st);
+			delete st;
+		}
 			break;
 		case 60:
-			api->Use();
+		{
+			SQLUse *st = new SQLUse(sql_vector_);
+			api->Use(*st);
+			delete st;
+		}
 			break;
 		case 70:
-			api->Insert();
+		{
+			SQLInsert *st = new SQLInsert(sql_vector_);
+			api->Insert(*st);
+			delete st;
+		}
 			break;
 		case 80:
-			api->Exec();
+		{
+			SQLExec *st  = new SQLExec(sql_vector_);
+			string sql_content;
+			ifstream in(st->GetFileName(), ios::in | ios::binary);
+			in.seekg(0, ios::end);
+			sql_content.resize(in.tellg());
+
+			in.seekg(0, ios::beg);
+			in.read(&sql_content[0], sql_content.size());
+			in.close();
+
+			vector<string> sqls = SplitSQL(sql_content, ";");
+			for (auto sql = sqls.begin(); sql != sqls.end(); sql++)
+				ExecSQL((*sql));
+			delete st;
+		}
 			break;
 		case 90:
-			api->Select();
+		{
+			SQLSelect *st = new SQLSelect(sql_vector_);
+			api->Select(*st);
+			delete st;
+		}
 			break;
 		case 100:
-			api->Delete();
+		{
+			SQLDelete *st = new SQLDelete(sql_vector_);
+			api->Delete(*st);
+			delete st;
+		}
 			break;
 		case 110:
-			api->Update();
+		{
+			SQLUpdate *st = new SQLUpdate(sql_vector_);
+			api->Update(*st);
+			delete st;
+		}
 			break;
 		default:
 			break;

@@ -21,12 +21,12 @@ class Table;
 class Attribute;
 class Index;
 
+/* Base class: SQL (sql statement) */
 class SQL
 {
 public:
 	SQL();
 	SQL(int sql_type);
-	virtual ~SQL();
 	virtual void Parse(vector<string> sql_vector) = 0;
 	int GetSQLType();
 	void SetSQLType(int sql_type);
@@ -35,6 +35,9 @@ protected:
 	int sql_type_;
 };
 
+/* class: SQLCreateDatabase 
+	eg.: create database dbname;
+*/
 class SQLCreateDatabase: public SQL
 {
 public:
@@ -42,11 +45,13 @@ public:
 	string GetDBName();
 	void SetDBName(string dbname);
 	void Parse(vector<string> sql_vector);
-
 private:
 	string db_name_;
 };
 
+/* class: SQLCreateTable
+	eg.: create table tbname (attr1, char(100), attr2, char(20), primary key(attr1));
+*/
 class SQLCreateTable: public SQL 
 {
 public:
@@ -86,6 +91,31 @@ private:
 	string db_name_;
 };
 
+class SQLDropTable: public SQL
+{
+public:
+	SQLDropTable(vector<string> sql_vector);
+	string GetTableName();
+	void SetTableName(string tbname);
+	void Parse(vector<string> sql_vector);
+private:
+	string tb_name_;
+};
+
+class SQLDropIndex: public SQL
+{
+public:
+	SQLDropIndex(vector<string> sql_vector);
+	string GetIndexName();
+	void SetIndexName(string  idxname);
+	void Parse(vector<string> sql_vector);
+private:
+	string index_name_;
+};
+
+/* class: SQLUse
+	eg.: use dbname;
+*/
 class SQLUse: public SQL
 {
 public:
@@ -95,6 +125,87 @@ public:
 	void Parse(vector<string> sql_vector);
 private:
 	string db_name_;
+};
+
+/* Execute sql file */
+class SQLExec: public SQL
+{
+public:
+	SQLExec(vector<string> sql_vector);
+	string GetFileName();
+	void Parse(vector<string> sql_vector);
+private:
+	string file_name_;
+};
+
+typedef	struct
+{
+	int data_type_;
+	string value;
+}SQLValue;
+
+/* eg.: insert into tbname values(val1, val2); */
+class SQLInsert: public SQL
+{
+public:
+	SQLInsert(vector<string> sql_vector);
+	string GetTableName();
+	vector<SQLValue>& GetValues();  //??reference
+	void Parse(vector<string> sql_vector);
+private:
+	string tb_name_;
+	vector<SQLValue> values_;
+};
+
+typedef struct
+{
+	int op_type;
+	string key;
+	string value;
+}SQLWhere;
+
+class SQLSelect: public SQL
+{
+public:
+	SQLSelect(vector<string> sql_vector);
+	string GetTableName();
+	vector<SQLWhere>& GetWheres();
+	void Parse(vector<string> sql_vector);
+private:
+	string tb_name_;
+	vector<SQLWhere> wheres_;
+};
+
+class SQLDelete: public SQL
+{
+public:
+	SQLDelete(vector<string> sql_vector);
+	string GetTableName();
+	vector<SQLWhere>& GetWheres();
+	void Parse(vector<string> sql_vector);
+private:
+	string tb_name_;
+	vector<SQLWhere> wheres_;
+};
+
+typedef struct
+{
+	string key;
+	string value;
+}SQLKeyValue;
+
+class SQLUpdate: public SQL
+{
+public:
+	SQLUpdate(vector<string> sql_vector);
+	string GetTableName();
+	vector<SQLWhere>& GetWheres();
+	vector<SQLKeyValue>& GetKeyValues();
+	void Parse(vector<string> sql_vector);
+private:
+	string tb_name_;
+	vector<SQLWhere> wheres_;
+	vector<SQLKeyValue> keyvalues_;
 };
 
 #endif
