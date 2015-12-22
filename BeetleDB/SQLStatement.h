@@ -28,8 +28,8 @@ public:
 	SQL();
 	SQL(int sql_type);
 	virtual void Parse(vector<string> sql_vector) = 0;
-	int GetSQLType();
-	void SetSQLType(int sql_type);
+	int get_sql_type();
+	void set_sql_type(int sql_type);
 	int ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int pos);
 protected:
 	int sql_type_;
@@ -42,8 +42,8 @@ class SQLCreateDatabase: public SQL
 {
 public:
 	SQLCreateDatabase(vector<string> sql_vector);
-	string GetDBName();
-	void SetDBName(string dbname);
+	string get_db_name();
+	void set_db_name(string dbname);
 	void Parse(vector<string> sql_vector);
 private:
 	string db_name_;
@@ -56,13 +56,13 @@ class SQLCreateTable: public SQL
 {
 public:
 	SQLCreateTable(vector<string> sql_vector);
-	string GetDBName();
-	void SetDBName(string dbname);
+	string get_tb_name();
+	void set_tb_name(string dbname);
 	vector<Attribute> GetAttributes();
 	void SetAttributes(vector<Attribute> attr);
 	void Parse(vector<string> sql_vector);
 private:
-	string db_name_;
+	string tb_name_;
 	vector<Attribute> attrs_;
 };
 
@@ -70,9 +70,9 @@ class SQLCreateIndex: public SQL
 {
 public:
 	SQLCreateIndex(vector<string> sql_vector);
-	string GetTableName();
-	string GetIndexName();
-	string GetColumnName();
+	string get_tb_name();
+	string get_index_name();
+	string get_column_name();
 	void Parse(vector<string> sql_vector);
 private:
 	string index_name_;
@@ -84,8 +84,8 @@ class SQLDropDatabase: public SQL
 {
 public:
 	SQLDropDatabase(vector<string> sql_vector);
-	string GetDBName();
-	void SetDBName(string dbname);
+	string get_db_name();
+	void set_db_name(string dbname);
 	void Parse(vector<string> sql_vector);
 private:
 	string db_name_;
@@ -95,8 +95,8 @@ class SQLDropTable: public SQL
 {
 public:
 	SQLDropTable(vector<string> sql_vector);
-	string GetTableName();
-	void SetTableName(string tbname);
+	string get_tb_name();
+	void set_tb_name(string tbname);
 	void Parse(vector<string> sql_vector);
 private:
 	string tb_name_;
@@ -106,8 +106,8 @@ class SQLDropIndex: public SQL
 {
 public:
 	SQLDropIndex(vector<string> sql_vector);
-	string GetIndexName();
-	void SetIndexName(string  idxname);
+	string get_index_name();
+	void set_index_name(string  idxname);
 	void Parse(vector<string> sql_vector);
 private:
 	string index_name_;
@@ -120,8 +120,8 @@ class SQLUse: public SQL
 {
 public:
 	SQLUse(vector<string> sql_vector);
-	string GetDBName();
-	void SetDBName(string dbname);
+	string get_db_name();
+	void set_db_name(string dbname);
 	void Parse(vector<string> sql_vector);
 private:
 	string db_name_;
@@ -132,7 +132,7 @@ class SQLExec: public SQL
 {
 public:
 	SQLExec(vector<string> sql_vector);
-	string GetFileName();
+	string get_file_name();
 	void Parse(vector<string> sql_vector);
 private:
 	string file_name_;
@@ -149,7 +149,7 @@ class SQLInsert: public SQL
 {
 public:
 	SQLInsert(vector<string> sql_vector);
-	string GetTableName();
+	string get_tb_name();
 	vector<SQLValue>& GetValues();  //??reference
 	void Parse(vector<string> sql_vector);
 private:
@@ -168,7 +168,7 @@ class SQLSelect: public SQL
 {
 public:
 	SQLSelect(vector<string> sql_vector);
-	string GetTableName();
+	string get_tb_name();
 	vector<SQLWhere>& GetWheres();
 	void Parse(vector<string> sql_vector);
 private:
@@ -180,7 +180,7 @@ class SQLDelete: public SQL
 {
 public:
 	SQLDelete(vector<string> sql_vector);
-	string GetTableName();
+	string get_tb_name();
 	vector<SQLWhere>& GetWheres();
 	void Parse(vector<string> sql_vector);
 private:
@@ -198,7 +198,7 @@ class SQLUpdate: public SQL
 {
 public:
 	SQLUpdate(vector<string> sql_vector);
-	string GetTableName();
+	string get_tb_name();
 	vector<SQLWhere>& GetWheres();
 	vector<SQLKeyValue>& GetKeyValues();
 	void Parse(vector<string> sql_vector);

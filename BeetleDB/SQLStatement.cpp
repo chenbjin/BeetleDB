@@ -19,7 +19,9 @@ SQL::SQL():sql_type_(-1){}
 
 SQL::SQL(int sql_type): sql_type_(sql_type){}
 
-int SQL::GetSQLType() { return sql_type_; }
+int SQL::get_sql_type() { return sql_type_; }
+
+void SQL::set_sql_type(int sql_type) { sql_type_ = sql_type; }
 
 int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int pos)
 {
@@ -27,23 +29,23 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	if (sql_vector[pos] == "int")
 	{
 		cout << "logging: Type: int" << endl;
-		attr.SetDataType(T_INT);
-		attr.SetLength(4);
+		attr.set_data_type(T_INT);
+		attr.set_length(4);
 		pos ++;
 		if (sql_vector[pos] == ",") pos ++;
 	}
 	else if (sql_vector[pos] == "float")
 	{
 		cout << "logging: Type: float" << endl;
-		attr.SetDataType(T_FLOAT);
-		attr.SetLength(4);
+		attr.set_data_type(T_FLOAT);
+		attr.set_length(4);
 		pos ++;
 		if (sql_vector[pos] == ",") pos ++;
 	}
 	else if (sql_vector[pos] == "char" || sql_vector[pos] == "varchar")
 	{
 		cout << "logging: Type: char" << endl;
-		attr.SetDataType(T_CHAR);
+		attr.set_data_type(T_CHAR);
 		pos ++;
 		if (sql_vector[pos] == ")") pos ++;
 		if (sql_vector[pos] == ",") pos ++;
@@ -56,9 +58,9 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 /* -------------- SQLCreateDatabase ----------------- */
 SQLCreateDatabase::SQLCreateDatabase(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLCreateDatabase::GetDBName() { return db_name_; }
+string SQLCreateDatabase::get_db_name() { return db_name_; }
 
-void SQLCreateDatabase::SetDBName(string dbname) { db_name_ = dbname; }
+void SQLCreateDatabase::set_db_name(string dbname) { db_name_ = dbname; }
 
 void SQLCreateDatabase::Parse(vector<string> sql_vector)
 {
@@ -74,9 +76,9 @@ void SQLCreateDatabase::Parse(vector<string> sql_vector)
 /* -------------- SQLCreateTable ----------------- */
 SQLCreateTable::SQLCreateTable(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLCreateTable::GetDBName() { return db_name_; }
+string SQLCreateTable::get_tb_name() { return tb_name_; }
 
-void SQLCreateTable::SetDBName(string dbname) { db_name_ = dbname; }
+void SQLCreateTable::set_tb_name(string dbname) { tb_name_ = dbname; }
 
 vector<Attribute> SQLCreateTable::GetAttributes() { return attrs_; }
 
@@ -89,7 +91,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 	if (sql_vector.size() <= pos) throw SyntaxErrorException();
 	
 	cout << "logging: Table Name: " << sql_vector[pos] << endl;
-	db_name_ = sql_vector[pos];
+	tb_name_ = sql_vector[pos];
 	pos ++;
 
 	if (sql_vector[pos] != "(") throw SyntaxErrorException();
@@ -105,7 +107,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 		{
 			cout << "logging: Column: " << sql_vector[pos] << endl;
 			Attribute attr;
-			attr.SetAttributeName(sql_vector[pos]);
+			attr.set_attr_name(sql_vector[pos]);
 			pos++;
 			pos = ParseDataType(sql_vector, attr, pos);
 			attrs_.push_back(attr);
@@ -121,9 +123,9 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 			pos ++;
 			for (auto att = attrs_.begin(); att != attrs_.end() ; att++)
 			{
-				if ((*att).GetAttributeName() == sql_vector[pos])
+				if ((*att).get_attr_name() == sql_vector[pos])
 				{
-					(*att).SetAttibuterType(1);
+					(*att).set_attr_type(1);
 					cout << "logging: Primary Key:" << sql_vector[pos] << endl;
 				}
 			}
@@ -137,11 +139,11 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 /* -------------- SQLCreateIndex ----------------- */
 SQLCreateIndex::SQLCreateIndex(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLCreateIndex::GetTableName() { return tb_name_; }
+string SQLCreateIndex::get_tb_name() { return tb_name_; }
 
-string SQLCreateIndex::GetIndexName() { return index_name_; }
+string SQLCreateIndex::get_index_name() { return index_name_; }
 
-string SQLCreateIndex::GetColumnName() { return col_name_; }
+string SQLCreateIndex::get_column_name() { return col_name_; }
 
 void SQLCreateIndex::Parse(vector<string> sql_vector)
 {
@@ -174,9 +176,9 @@ void SQLCreateIndex::Parse(vector<string> sql_vector)
 /* -------------- SQLDropDatabase ----------------- */
 SQLDropDatabase::SQLDropDatabase(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLDropDatabase::GetDBName() { return db_name_; }
+string SQLDropDatabase::get_db_name() { return db_name_; }
 
-void SQLDropDatabase::SetDBName(string dbname) { db_name_ = dbname; }
+void SQLDropDatabase::set_db_name(string dbname) { db_name_ = dbname; }
 
 void SQLDropDatabase::Parse(vector<string> sql_vector)
 {
@@ -192,9 +194,9 @@ void SQLDropDatabase::Parse(vector<string> sql_vector)
 /* -------------- SQLDropTable -------------------- */
 SQLDropTable::SQLDropTable(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLDropTable::GetTableName() { return tb_name_; }
+string SQLDropTable::get_tb_name() { return tb_name_; }
 
-void SQLDropTable::SetTableName(string tbname) { tb_name_ = tbname; }
+void SQLDropTable::set_tb_name(string tbname) { tb_name_ = tbname; }
 
 void SQLDropTable::Parse(vector<string> sql_vector)
 {
@@ -206,9 +208,9 @@ void SQLDropTable::Parse(vector<string> sql_vector)
 /* -------------- SQLDropIndex ------------------- */
 SQLDropIndex::SQLDropIndex(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLDropIndex::GetIndexName() { return index_name_; }
+string SQLDropIndex::get_index_name() { return index_name_; }
 
-void SQLDropIndex::SetIndexName(string idxname) { index_name_ = idxname; }
+void SQLDropIndex::set_index_name(string idxname) { index_name_ = idxname; }
 
 void SQLDropIndex::Parse(vector<string> sql_vector)
 {
@@ -220,9 +222,9 @@ void SQLDropIndex::Parse(vector<string> sql_vector)
 /* -------------- SQLUse ----------------- */
 SQLUse::SQLUse(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLUse::GetDBName() { return db_name_; }
+string SQLUse::get_db_name() { return db_name_; }
 
-void SQLUse::SetDBName(string dbname) { db_name_ = dbname; }
+void SQLUse::set_db_name(string dbname) { db_name_ = dbname; }
 
 void SQLUse::Parse(vector<string> sql_vector)
 {
@@ -238,7 +240,7 @@ void SQLUse::Parse(vector<string> sql_vector)
 /* ----------------- SQLExec ----------------*/
 SQLExec::SQLExec(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLExec::GetFileName() { return file_name_; }
+string SQLExec::get_file_name() { return file_name_; }
 
 void SQLExec::Parse(vector<string> sql_vector)
 {
@@ -250,7 +252,7 @@ void SQLExec::Parse(vector<string> sql_vector)
 /* ----------------- SQLInsert ------------------ */
 SQLInsert::SQLInsert(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLInsert::GetTableName() { return tb_name_; }
+string SQLInsert::get_tb_name() { return tb_name_; }
 
 vector<SQLValue>& SQLInsert::GetValues() { return values_; }
 
@@ -298,7 +300,7 @@ void SQLInsert::Parse(vector<string> sql_vector)
 /* ---------------- SQLSelect ----------------- */
 SQLSelect::SQLSelect(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLSelect::GetTableName() { return tb_name_; }
+string SQLSelect::get_tb_name() { return tb_name_; }
 
 vector<SQLWhere>& SQLSelect::GetWheres() {  return wheres_; }
 
@@ -349,7 +351,7 @@ void SQLSelect::Parse(vector<string> sql_vector) /* only support "select * ". */
 /* ---------------- SQLDelete ---------------- */
 SQLDelete::SQLDelete(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLDelete::GetTableName() { return tb_name_; }
+string SQLDelete::get_tb_name() { return tb_name_; }
 
 vector<SQLWhere>& SQLDelete::GetWheres() {  return wheres_; }
 
@@ -397,7 +399,7 @@ void SQLDelete::Parse(vector<string> sql_vector) /* only support "select * ". */
 /* ---------------  SQLUpdate ----------------*/
 SQLUpdate::SQLUpdate(vector<string> sql_vector) { Parse(sql_vector); }
 
-string SQLUpdate::GetTableName() { return tb_name_; }
+string SQLUpdate::get_tb_name() { return tb_name_; }
 
 vector<SQLWhere>& SQLUpdate::GetWheres() { return wheres_; }
 

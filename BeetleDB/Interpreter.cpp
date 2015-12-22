@@ -24,8 +24,8 @@ Interpreter::Interpreter(void) : sql_type_(-1)
 	if (getenv("DBHOME"))
 		path = string(getenv("DBHOME")) + "/BeetleDBData/";
 	else
-		path = "D:/BeetleDBData/";
-	//string path = "/BeetleDBData/";
+		path = boost::filesystem::initial_path<boost::filesystem::path>().string() + "/BeetleDBData/"; /* get current dir path.*/
+
 	api = new API(path);
 }
 
@@ -47,7 +47,7 @@ vector<string> Interpreter::SplitSQL(string statement, string seg)
 
 void Interpreter::GeneralizeSQL()
 {
-	// remove newlines, tabs
+		// remove newlines, tabs
 	boost::regex reg("[\r\n\t]");
 	//string newstr(" ");
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, " ");
@@ -87,10 +87,16 @@ void Interpreter::GetSQLType()
 		return;
 	}
 	boost::algorithm::to_lower(sql_vector_[0]);
-	if (sql_vector_[0] == "quit") { sql_type_ = 10;} /* QUIT */
-	else if (sql_vector_[0] == "help" || sql_vector_[0] == "\\?") { sql_type_ = 20; }  /* HELP */
+	if (sql_vector_[0] == "quit" || sql_vector_[0] == "\\q" || sql_vector_[0] == "\\e") { sql_type_ = 10;} /* QUIT */
+	else if (sql_vector_[0] == "help"|| sql_vector_[0] == "\\h" || sql_vector_[0] == "\\?" || sql_vector_[0] == "?") { sql_type_ = 20; }  /* HELP */
 	else if (sql_vector_[0] == "create")
 	{
+		if(sql_vector_.size() <= 1)
+		{
+			sql_type_ = -1;
+			cout << "SyntaxError: use 'help;' to get correct command." << endl;
+			return;
+		}
 		boost::algorithm::to_lower(sql_vector_[1]);
 		if (sql_vector_[1] == "database") { sql_type_ = 30; } /* CREATE DATABASE */
 		else if (sql_vector_[1] == "table") { sql_type_ = 31; } /* CREATE TABLE */
@@ -99,6 +105,12 @@ void Interpreter::GetSQLType()
 	}
 	else if (sql_vector_[0] == "show")
 	{
+		if(sql_vector_.size() <= 1)
+		{
+			sql_type_ = -1;
+			cout << "SyntaxError: use 'help;' to get correct command." << endl;
+			return;
+		}
 		boost::algorithm::to_lower(sql_vector_[1]);
 		if (sql_vector_[1] == "database") { sql_type_ = 40; } /* SHOW DATABASES */
 		else if (sql_vector_[1] == "table") { sql_type_ = 41; } /* SHOW TABLES */
@@ -106,6 +118,12 @@ void Interpreter::GetSQLType()
 	}
 	else if (sql_vector_[0] == "drop")
 	{
+		if(sql_vector_.size() <= 1)
+		{
+			sql_type_ = -1;
+			cout << "SyntaxError: use 'help;' to get correct command." << endl;
+			return;
+		}
 		boost::algorithm::to_lower(sql_vector_[1]);
 		if (sql_vector_[1] == "database") { sql_type_ = 50; } /* DROP DATABASE */
 		else if (sql_vector_[1] == "table") { sql_type_ = 51; } /* DROP TABLE */
@@ -204,7 +222,7 @@ void Interpreter::ParseSQL()
 		{
 			SQLExec *st  = new SQLExec(sql_vector_);
 			string sql_content;
-			ifstream in(st->GetFileName(), ios::in | ios::binary);
+			ifstream in(st->get_file_name(), ios::in | ios::binary);
 			in.seekg(0, ios::end);
 			sql_content.resize(in.tellg());
 

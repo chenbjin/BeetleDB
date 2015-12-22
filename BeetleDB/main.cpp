@@ -53,6 +53,7 @@ int main()
 
 void Welcome()
 {
-	cout << "Welcome to the BeetleDB. Commands end with ';'." << endl;
-	cout <<	"Type 'help;' for help. Type 'clear' to clear the current input statement." << endl;
+	cout << "Welcome to BeetleDB. Commands end with ';'." << endl;
+	cout << "Copyright (c) 2015, Beetle Group. All rights reserved." << endl << endl;
+	cout <<	"Type 'help;' for help." << endl;
 }
