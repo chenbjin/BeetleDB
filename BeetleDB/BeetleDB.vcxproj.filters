@@ -42,6 +42,21 @@
     <ClCompile Include="SQLStatement.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BPlusTree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FileInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockHandle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHandle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interpreter.h">
@@ -69,6 +84,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SQLStatement.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BPlusTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockHandle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHandle.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

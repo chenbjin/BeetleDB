@@ -35,9 +35,7 @@ protected:
 	int sql_type_;
 };
 
-/* class: SQLCreateDatabase 
-	eg.: create database dbname;
-*/
+/* class: SQLCreateDatabase */
 class SQLCreateDatabase: public SQL
 {
 public:
@@ -49,9 +47,7 @@ private:
 	string db_name_;
 };
 
-/* class: SQLCreateTable
-	eg.: create table tbname (attr1, char(100), attr2, char(20), primary key(attr1));
-*/
+/* class: SQLCreateTable: create table tbname (attr1, char(100), attr2, char(20), primary key(attr1));*/
 class SQLCreateTable: public SQL 
 {
 public:
@@ -113,9 +109,7 @@ private:
 	string index_name_;
 };
 
-/* class: SQLUse
-	eg.: use dbname;
-*/
+/* class: SQLUse: use dbname; */
 class SQLUse: public SQL
 {
 public:
@@ -206,6 +200,32 @@ private:
 	string tb_name_;
 	vector<SQLWhere> wheres_;
 	vector<SQLKeyValue> keyvalues_;
+};
+
+class TKey
+{
+public:
+	TKey(int keytype, int length);
+	TKey(const TKey& t1);
+	~TKey();
+	void ReadValue(const char *content);
+	void ReadValue(string content);
+
+	int get_key_type();
+	char* get_key();
+	int get_length();
+
+	friend std::ostream & operator<<(std::ostream& out, const TKey& object);
+	bool operator<(const TKey t1);
+	bool operator>(const TKey t1);
+	bool operator<=(const TKey t1);
+	bool operator>=(const TKey t1);
+	bool operator==(const TKey t1);
+	bool operator!=(const TKey t1);
+private:
+	int key_type_;
+	char *key_;
+	int length_;
 };
 
 #endif

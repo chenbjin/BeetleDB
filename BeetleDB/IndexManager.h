@@ -13,6 +13,7 @@
 #include "SQLStatement.h"
 #include "CatalogManager.h"
 #include "BufferManager.h"
+#include "BPlusTree.h"
 
 using namespace std;
 

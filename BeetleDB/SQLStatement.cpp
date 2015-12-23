@@ -463,3 +463,117 @@ void SQLUpdate::Parse(vector<string> sql_vector)
 	}
 }
 
+/* ----------------- TKey -------------------- */
+TKey::TKey(int keytype, int length)
+{
+	key_type_ = keytype;
+	if (keytype == 2) length_ = length; //char(100)
+	else length_ = 4;
+	key_ = new char[length_];
+
+}
+
+TKey::TKey(const TKey& t1)
+{
+	key_type_ = t1.key_type_;
+	length_ = t1.length_;
+	key_ = new char[length_];
+	memcpy(key_, t1.key_, length_);
+}
+
+TKey::~TKey()
+{
+	if (key_ != NULL)
+		delete []key_;
+}
+
+void TKey::ReadValue(const char *content)
+{
+	switch (key_type_)
+	{
+	case 0:
+		int a = atoi(content);
+		memcpy(key_, &a, length_);
+		break;
+	case 1:
+		float b = atof(content);
+		memcpy(key_, &b, length_);
+		break;
+	case 2:
+		memcpy(key_, content, length_);
+		break;
+	}
+}
+
+void TKey::ReadValue(string content)
+{
+	switch (key_type_)
+	{
+	case 0:
+		int a = atoi(content.c_str());
+		memcpy(key_, &a, length_);
+		break;
+	case 1:
+		float b = atof(content.c_str());
+		memcpy(key_, &b, length_);
+		break;
+	case 2:
+		memcpy(key_, content.c_str(), length_);
+		break;
+	}
+}
+
+int TKey::get_key_type(){ return key_type_; }
+char* TKey::get_key(){ return key_; }
+int TKey::get_length(){ return length_; }
+
+std::ostream & operator<<(std::ostream& out, const TKey& object){}
+
+bool TKey::operator<(const TKey t1)
+{
+	switch (t1.key_type_)
+	{
+	case 0:
+		return *(int*)key_ < *(int*)t1.key_;
+	case 1:
+		return *(float*)key_ < *(float*)t1.key_;
+	case 2:
+		return (strncmp(key_, t1.key_, length_) < 0);
+	default:
+		return false;
+	}
+}
+
+bool TKey::operator>(const TKey t1)
+{
+	switch (t1.key_type_)
+	{
+	case 0:
+		return *(int*)key_ > *(int*)t1.key_;
+	case 1:
+		return *(float*)key_ > *(float*)t1.key_;
+	case 2:
+		return (strncmp(key_, t1.key_, length_) > 0);
+	default:
+		return false;
+	}
+}
+
+bool TKey::operator==(const TKey t1) 
+{
+	switch (t1.key_type_)
+	{
+	case 0:
+		return *(int*)key_ == *(int*)t1.key_;
+	case 1:
+		return *(float*)key_ == *(float*)t1.key_;
+	case 2:
+		return (strncmp(key_, t1.key_, length_) == 0);
+	default:
+		return false;
+	}
+}
+
+bool TKey::operator<=(const TKey t1) { return !(operator>(t1)); }
+bool TKey::operator>=(const TKey t1) { return !(operator<(t1)); }
+bool TKey::operator!=(const TKey t1) { return !(operator==(t1)); }
