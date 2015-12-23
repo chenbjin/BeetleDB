@@ -25,6 +25,8 @@ Interpreter::Interpreter(void) : sql_type_(-1)
 		path = string(getenv("DBHOME")) + "/BeetleDBData/";
 	else
 		path = boost::filesystem::initial_path<boost::filesystem::path>().string() + "/BeetleDBData/"; /* get current dir path.*/
+	
+	if (!boost::filesystem::exists(path)) boost::filesystem::create_directory(path);
 
 	api = new API(path);
 }
@@ -280,6 +282,6 @@ void Interpreter::ExecSQL(string statement)
 	sql_statement_ = statement;
 	GeneralizeSQL();
 	GetSQLType();
-	cout << "logging: SQL statement:" << sql_statement_ << endl;
+	//cout << "logging: SQL statement:" << sql_statement_ << endl;
 	ParseSQL();
 }

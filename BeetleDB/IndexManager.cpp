@@ -7,11 +7,8 @@
 #include "IndexManager.h"
 
 
-IndexManager::IndexManager(void)
-{
-}
+IndexManager::IndexManager(CatalogManager *cm, BufferManager *bm, string dbname):catalog_m_(cm), buffer_m_(bm), db_name_(dbname){}
 
+IndexManager::~IndexManager(void){}
 
-IndexManager::~IndexManager(void)
-{
-}
+void IndexManager::CreateIndex(SQLCreateIndex& st){}

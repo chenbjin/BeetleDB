@@ -66,16 +66,87 @@ void API::Help()
 	cout << "-------------------------------------------------------------" << endl;
 }
 
+/* How Managers mainly work?
+
+CatalogManager: Create Database/Table, Drop, Use.
+
+RecordManager: Insert, Select, Delete, Update.
+
+IndexManager: Create Index.
+*/
+
 void API::CreateDatabase(SQLCreateDatabase& statement)
 {
+	cout << "Creating database: " << statement.get_db_name() << endl;
+	string folder_name(path_ + statement.get_db_name());
+	boost::filesystem::path folder_path(folder_name); /* create directory for database. */
+
+	if (catalog_m_->GetDB(statement.get_db_name()) != NULL) throw DatabaseAlreadyExistsException();
+	if (boost::filesystem::exists(folder_path))
+	{
+		boost::filesystem::remove_all(folder_path);
+		cout << "Database folder exists and deleted!" << endl;
+	}
+
+	boost::filesystem::create_directories(folder_path);
+	cout << "Database folder created!" << endl;
+	
+	catalog_m_->CreateDatabase(statement.get_db_name());
+	cout << "Catalog written!" << endl;
+	catalog_m_->WriteArchiveFile();
 }
-void API::CreateTable(SQLCreateTable& statement){}
-void API::CreateIndex(SQLCreateIndex& statement){}
+
+void API::CreateTable(SQLCreateTable& statement)
+{
+	cout << "Creating table: " << statement.get_tb_name() << endl;
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+
+	Database *db = catalog_m_->GetDB(current_db_);
+	if (db == NULL) throw DatabaseNotExistException();
+	if (db->GetTable(statement.get_tb_name()) != NULL) throw TableAlreadyExistsException();
+
+	string file_name(path_ + current_db_ + "/" + statement.get_tb_name() + ".records");
+	boost::filesystem::path folder_path(file_name);
+
+	if (boost::filesystem::exists(folder_path))
+	{
+		boost::filesystem::remove_all(folder_path);
+		cout << "Table file exists and deleted!" << endl;
+	}
+
+	ofstream ofs(file_name);
+	ofs.close();
+
+	cout << "Table file created!" << endl;
+	db->CreateTable(statement);
+
+	cout << "Catalog written!" << endl;
+	catalog_m_->WriteArchiveFile();
+}
+
+void API::CreateIndex(SQLCreateIndex& statement)
+{
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+	
+	Database *db = catalog_m_->GetDB(current_db_);
+	if (db->GetTable(statement.get_tb_name()) == NULL) throw TableNotExistException();
+	if (db->CheckIfIndexExists(statement.get_index_name()) ) throw IndexAlreadyExistsException();
+
+	IndexManager *im = new IndexManager(catalog_m_, buffer_m_, current_db_);
+	im->CreateIndex(statement);
+	delete im;
+}
 
 void API::ShowDatabases()
 {
 	cout << "here" << endl;
 	vector<Database> dbs = catalog_m_->GetDBs();
+	if (dbs.size() == 0)
+	{
+		cout << "No databases exist now." <<endl;
+		cout << "Use 'create database' command to create a new database." << endl;
+		return;
+	}
 	cout << setiosflags(ios::left) << endl;
 	cout << "+--------------------+" << endl;
 	cout << "| " << setw(18) << "Database" << " |" << endl;
@@ -98,12 +169,157 @@ void API::ShowTables()
 		cout << "| " << setw(22) << (*tb).get_tb_name() << " |" << endl;
 	cout << "+------------------------+" << endl;
 }
-void API::DropDatabase(SQLDropDatabase& statement){}
-void API::DropTable(SQLDropTable& statement){}
-void API::DropIndex(SQLDropIndex& statement){}
-void API::Use(SQLUse& statement){}
-void API::Insert(SQLInsert& statement){}
-void API::Exec(SQLExec& statement){}
-void API::Select(SQLSelect& statement){}
-void API::Delete(SQLDelete& statement){}
-void API::Update(SQLUpdate& statement){}
+
+void API::DropDatabase(SQLDropDatabase& statement)
+{
+	cout << "Droping database: " << statement.get_db_name() << endl;
+	bool found = false;
+
+	for (auto db = catalog_m_->GetDBs().begin(); db != catalog_m_->GetDBs().end(); db++)
+	{
+		if (db->get_db_name() == statement.get_db_name())
+		{
+			found = true;
+			break;
+		}
+	}
+	if (found == false) throw DatabaseNotExistException();
+	
+	string folder_name(path_ + statement.get_db_name());
+	boost::filesystem::path folder_path(folder_name);
+	
+	if (!boost::filesystem::exists(folder_path)) cout << "Database folder doesn't exists!" << endl;
+	else
+	{
+		boost::filesystem::remove_all(folder_path);
+		cout << "Database folder deleted!" << endl;
+	}
+
+	catalog_m_->DeleteDatabase(statement.get_db_name());
+	cout << "Database removed from catalog!" << endl;
+	catalog_m_->WriteArchiveFile();
+
+	if (statement.get_db_name() == current_db_)
+	{
+		current_db_ = "";
+		delete buffer_m_;
+	}
+}
+
+void API::DropTable(SQLDropTable& statement)
+{
+	cout << "Droping table: " << statement.get_tb_name() << endl;
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+
+	Database *db = catalog_m_->GetDB(current_db_);
+	if (db == NULL) throw DatabaseNotExistException();
+
+	Table *tb = db->GetTable(statement.get_tb_name());
+	if (tb == NULL) throw TableNotExistException();
+	
+	string file_name(path_ + current_db_ + "/" + statement.get_tb_name() + ".records");
+
+	if (!boost::filesystem::exists(file_name)) cout << "Table file doesn't exists!" << endl;
+	else
+	{
+		boost::filesystem::remove(file_name);
+		cout << "Table file deleted!" << endl;
+	}
+
+	cout << "Removing Index files!" << endl;
+	for (int i = 0; i < tb->GetIndexNum(); i++)
+	{
+		string file_name(path_ + current_db_ + "/" + tb->GetIndex(i)->get_name() + ".index");
+		if (!boost::filesystem::exists(file_name)) cout << "Index file doesn't exist!" << endl;
+		else
+		{
+			boost::filesystem::remove(file_name);
+			cout << "Index file removed!" << endl;
+		}
+	}
+
+	db->DropTable(statement);
+	cout << "Catalog written!" << endl;
+	catalog_m_->WriteArchiveFile();
+}
+
+void API::DropIndex(SQLDropIndex& statement)
+{
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+
+	Database *db = catalog_m_->GetDB(current_db_);
+	if (db == NULL) throw DatabaseNotExistException();
+	if (!db->CheckIfIndexExists(statement.get_index_name())) throw IndexNotExistException();
+
+	string file_name(path_ + current_db_ + "/" + statement.get_index_name() + ".index");
+	if (!boost::filesystem::exists(file_name))
+	{
+		cout << "Index file doesn't exist!" << endl;
+		return;
+	}
+	boost::filesystem::remove(file_name);
+	cout << "Index file removed!" << endl;
+
+	db->DropIndex(statement);
+	cout << "Catalog written!" << endl;
+	catalog_m_->WriteArchiveFile();
+}
+
+void API::Use(SQLUse& statement)
+{
+	Database *db = catalog_m_->GetDB(statement.get_db_name());
+	if (db == NULL) throw DatabaseNotExistException();
+
+	if (current_db_.length() != 0)
+	{
+		cout << "Closing the old database: " << current_db_ << endl;
+		catalog_m_->WriteArchiveFile();
+		delete buffer_m_;
+	}
+	current_db_ = statement.get_db_name();
+	buffer_m_ = new BufferManager(path_);
+}
+
+void API::Insert(SQLInsert& statement)
+{
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+	Database *db = catalog_m_->GetDB(current_db_);
+	if (db == NULL) throw DatabaseNotExistException();
+	
+	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, current_db_);
+	rm->Insert(statement);
+	delete rm;
+}
+
+void API::Select(SQLSelect& statement)
+{
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+	Table *tb = catalog_m_->GetDB(current_db_)->GetTable(statement.get_tb_name());
+	if (tb == NULL) throw TableNotExistException();
+	
+	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, current_db_);
+	rm->Select(statement);
+	delete rm;
+}
+
+void API::Delete(SQLDelete& statement)
+{
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+	Table *tb = catalog_m_->GetDB(current_db_)->GetTable(statement.get_tb_name());
+	if (tb == NULL) throw TableNotExistException();
+	
+	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, current_db_);
+	rm->Delete(statement);
+	delete rm;
+}
+
+void API::Update(SQLUpdate& statement)
+{
+	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
+	Table *tb = catalog_m_->GetDB(current_db_)->GetTable(statement.get_tb_name());
+	if (tb == NULL) throw TableNotExistException();
+	
+	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, current_db_);
+	rm->Update(statement);
+	delete rm;
+}

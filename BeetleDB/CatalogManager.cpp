@@ -39,12 +39,6 @@ void CatalogManager::ReadArchiveFile()
 		iar >> (*this);    /* asign to current catalog_m_; */
 		ifs.close();
 	}
-	/*
-	else
-	{
-		cout << "No databases exist now." <<endl;
-		cout << "Use 'create database' command to create a new database." << endl;
-	}*/
 }
 
 /* Write catalog to binary file. */

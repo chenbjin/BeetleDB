@@ -101,6 +101,9 @@
     <ClInclude Include="SQLStatement.h" />
     <ClInclude Include="StaticValue.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="name_rule" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

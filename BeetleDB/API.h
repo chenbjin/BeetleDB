@@ -32,7 +32,6 @@ public:
 	void DropIndex(SQLDropIndex& statement);
 	void Use(SQLUse& statement);
 	void Insert(SQLInsert& statement);
-	void Exec(SQLExec& statement);
 	void Select(SQLSelect& statement);
 	void Delete(SQLDelete& statement);
 	void Update(SQLUpdate& statement);

@@ -6,8 +6,9 @@
 //
 #include "BufferManager.h"
 
+#include <string>
 
-BufferManager::BufferManager(void)
+BufferManager::BufferManager(string path):path_(path)
 {
 }
 

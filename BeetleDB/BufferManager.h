@@ -7,11 +7,18 @@
 #pragma once
 #ifndef _BUFFERMANAGER_H_
 #define _BUFFERMANAGER_H_
+
+#include <string>
+
+using namespace std;
+
 class BufferManager
 {
 public:
-	BufferManager(void);
+	BufferManager(string path);
 	~BufferManager(void);
+private:
+	string path_;
 };
 
 #endif

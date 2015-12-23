@@ -7,11 +7,11 @@
 #include "RecordManager.h"
 
 
-RecordManager::RecordManager(void)
-{
-}
+RecordManager::RecordManager(CatalogManager *cm, BufferManager *bm, string dbname):catalog_m_(cm), buffer_m_(bm), db_name_(dbname) {}
 
+RecordManager::~RecordManager(void){}
 
-RecordManager::~RecordManager(void)
-{
-}
+void RecordManager::Insert(SQLInsert& st){}
+void RecordManager::Select(SQLSelect& st){}
+void RecordManager::Delete(SQLDelete& st){}
+void RecordManager::Update(SQLUpdate& st){}
