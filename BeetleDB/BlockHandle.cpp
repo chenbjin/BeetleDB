@@ -52,3 +52,13 @@ void BlockHandle::FreeBlock(BlockInfo* block)
 	}
 	block_count_ ++;
 }
+
+BlockInfo* BlockHandle::Add(BlockInfo* block) 
+{
+	BlockInfo* adder = new BlockInfo(0);
+	adder->SetNext(block->GetNext());
+	block->SetNext(adder);
+	block_count_++;
+	if (block_count_ == block_size_) return adder;
+    else return Add(adder);
+}

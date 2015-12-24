@@ -227,7 +227,7 @@ void API::DropTable(SQLDropTable& statement)
 	}
 
 	cout << "Removing Index files!" << endl;
-	for (int i = 0; i < tb->GetIndexNum(); i++)
+	for (unsigned int i = 0; i < tb->GetIndexNum(); i++)
 	{
 		string file_name(path_ + current_db_ + "/" + tb->GetIndex(i)->get_name() + ".index");
 		if (!boost::filesystem::exists(file_name)) cout << "Index file doesn't exist!" << endl;

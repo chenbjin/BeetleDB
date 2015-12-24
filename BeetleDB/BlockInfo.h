@@ -32,7 +32,7 @@ public:
 	char* get_data();
 
 	bool get_dirty();
-	bool set_dirty(bool dt);
+	void set_dirty(bool dt);
 
 	long get_age();
 

@@ -15,6 +15,7 @@
 #include "BufferManager.h"
 #include "CatalogManager.h"
 #include "Exceptions.h"
+#include "BlockInfo.h"
 
 using namespace std;
 
@@ -28,6 +29,12 @@ public:
 	void Select(SQLSelect& st);
 	void Delete(SQLDelete& st);
 	void Update(SQLUpdate& st);
+	
+	BlockInfo* GetBlockInfo(Table* tbl, int block_num);
+	vector<TKey> GetRecord(Table* tbl, int block_num, int offset);
+	void DeleteRecord(Table* tbl, int block_num, int offset);
+	void UpdateRecord(Table* tbl, int block_num, int offset, vector<int>& indices, vector<TKey>& values);
+	bool SatisfyWhere(Table* tbl, vector<TKey> keys, SQLWhere where);
 private:
 	CatalogManager* catalog_m_;
 	BufferManager* buffer_m_;

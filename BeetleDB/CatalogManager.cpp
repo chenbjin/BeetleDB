@@ -154,6 +154,7 @@ int Table::get_record_length() { return record_length_; }
 void Table::set_record_length(int len) { record_length_ = len; } 
 
 vector<Attribute>& Table::GetAttributes() { return ats_; }
+
 Attribute* Table::GetAttribute(string name)
 {
 	for (auto attr = ats_.begin(); attr != ats_.end(); attr++)
@@ -163,6 +164,7 @@ Attribute* Table::GetAttribute(string name)
 	}
 	return NULL;
 }
+
 int Table::GetAttributeIndex(string name)
 {
 	for (unsigned int i = 0; i < ats_.size(); i++)

@@ -25,7 +25,7 @@ void BlockInfo::set_block_num(int num){ block_num_ = num; }
 char* BlockInfo::get_data(){ return data_; }
 
 bool BlockInfo::get_dirty(){ return dirty_; }
-bool BlockInfo::set_dirty(bool dt){ dirty_ = dt; }
+void BlockInfo::set_dirty(bool dt){ dirty_ = dt; }
 
 long BlockInfo::get_age(){ return age_; }
 

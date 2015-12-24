@@ -492,12 +492,16 @@ void TKey::ReadValue(const char *content)
 	switch (key_type_)
 	{
 	case 0:
+	{
 		int a = atoi(content);
 		memcpy(key_, &a, length_);
+	}
 		break;
 	case 1:
+	{
 		float b = atof(content);
 		memcpy(key_, &b, length_);
+	}
 		break;
 	case 2:
 		memcpy(key_, content, length_);
@@ -510,12 +514,16 @@ void TKey::ReadValue(string content)
 	switch (key_type_)
 	{
 	case 0:
+	{
 		int a = atoi(content.c_str());
 		memcpy(key_, &a, length_);
+	}
 		break;
 	case 1:
+	{
 		float b = atof(content.c_str());
 		memcpy(key_, &b, length_);
+	}
 		break;
 	case 2:
 		memcpy(key_, content.c_str(), length_);
@@ -527,7 +535,32 @@ int TKey::get_key_type(){ return key_type_; }
 char* TKey::get_key(){ return key_; }
 int TKey::get_length(){ return length_; }
 
-std::ostream & operator<<(std::ostream& out, const TKey& object){}
+std::ostream & operator<<(std::ostream& out, const TKey& object)
+{
+	switch (object.key_type_)
+	{
+	case 0:
+	{
+		int a;
+		memcpy(&a, object.key_, object.length_);
+		cout << setw(9) << left <<  a;
+	}
+		break;
+	case 1:
+	{
+		float a;
+		memcpy(&a, object.key_, object.length_);
+		cout << setw(9) << left <<  a;
+	}
+		break;
+	case 2:
+	{
+		cout << setw(9) << left << object.key_;
+	}
+		break;
+	}
+	return out;
+}
 
 bool TKey::operator<(const TKey t1)
 {
