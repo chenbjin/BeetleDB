@@ -30,27 +30,32 @@ void IndexManager::CreateIndex(SQLCreateIndex& st)
 
 	/* create a new index file */
 	string file_name = catalog_m_->get_path() + db_name_ + "/" + st.get_index_name() + ".index";
-	ofstream ofs(file_name.c_str(),ios::binary);
+	ofstream ofs(file_name.c_str(), ios::binary);
 	ofs.close();
 
 	/* new index object */
-	Index idx(st.get_index_name(),st.get_column_name(), attr->get_data_type(), attr->get_length(),
-		(4 * 1024 - 12)/ (4 + attr->get_length()) /2 -1);
+	Index idx(st.get_index_name(), st.get_column_name(), attr->get_data_type(), attr->get_length(),
+		(4 * 1024 - 12)/ (4 + attr->get_length()) / 2 - 1);
 	tb->AddIndex(idx);
 
 	/* get all record and build b+ tree. */
-	BPlusTree tree(tb->GetIndex(0),buffer_m_,catalog_m_,db_name_);
-	RecordManager *rm = new RecordManager(catalog_m_,buffer_m_,db_name_);
+	cout << "get all record and build b+ tree." << endl;
+	BPlusTree tree(tb->GetIndex(0), buffer_m_, catalog_m_, db_name_);
+	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, db_name_);
+	
 	int col_idx = tb->GetAttributeIndex(st.get_column_name());
 	int block_num = tb->get_first_block_num();
 
 	for (int i = 0; i < tb->get_block_count(); i++)
 	{
-		BlockInfo *bp = rm->GetBlockInfo(tb,block_num);
+		BlockInfo *bp = rm->GetBlockInfo(tb, block_num);
 		for (int j = 0; j < bp->GetRecordCount(); j++)
 		{
+			//cout << "i&j: " << i << " " << j <<endl;
 			vector<TKey> tkey_value = rm->GetRecord(tb, block_num, j);
+			//cout << "after get record" << endl;
 			tree.Add(tkey_value[col_idx], block_num, j);
+			//cout << "tree.Add()" << endl;
 		}
 		block_num = bp->GetNextBlockNum();
 	}

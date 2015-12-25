@@ -112,6 +112,7 @@ void RecordManager::Insert(SQLInsert& st)
 		}
 		buffer_m_->WriteToDisk();
 		catalog_m_->WriteArchiveFile();
+		cout << "Insert successfully." << endl;
 		return;
 	}
 
@@ -181,6 +182,7 @@ void RecordManager::Insert(SQLInsert& st)
 	}
 	buffer_m_->WriteToDisk();
 	catalog_m_->WriteArchiveFile();
+	cout << "Insert successfully." << endl;
 }
 
 void RecordManager::Select(SQLSelect& st)
@@ -399,6 +401,7 @@ void RecordManager::Delete(SQLDelete& st)
 		}
 	}
 	buffer_m_->WriteToDisk();
+	cout << "Delete successfully." << endl; 
 }
 
 void RecordManager::Update(SQLUpdate& st)
@@ -502,6 +505,7 @@ void RecordManager::Update(SQLUpdate& st)
 		block_num = bp->GetNextBlockNum();
 	}
 	buffer_m_->WriteToDisk();
+	cout << "Update successfully." << endl;
 }
 
 BlockInfo* RecordManager::GetBlockInfo(Table* tbl, int block_num)
@@ -523,8 +527,9 @@ vector<TKey> RecordManager::GetRecord(Table* tbl, int block_num, int offset)
 		int length = tbl->GetAttributes()[i].get_length();
 		
 		TKey tmp(value_type, length);
+
 		memcpy(tmp.get_key(), content, length);
-		
+		//cout << "RecordManager::GetRecord::memcpy :" << content << " to " << tmp.get_key() << endl;
 		keys.push_back(tmp);
 		content += length;
 	}

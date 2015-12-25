@@ -28,7 +28,7 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	boost::algorithm::to_lower(sql_vector[pos]);
 	if (sql_vector[pos] == "int")
 	{
-		cout << "SQL::ParseDataType().logging: Type: int" << endl;
+		//cout << "SQL::ParseDataType().logging: Type: int" << endl;
 		attr.set_data_type(T_INT);
 		attr.set_length(4);
 		pos ++;
@@ -36,7 +36,7 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	}
 	else if (sql_vector[pos] == "float")
 	{
-		cout << "SQL::ParseDataType().logging: Type: float" << endl;
+		//cout << "SQL::ParseDataType().logging: Type: float" << endl;
 		attr.set_data_type(T_FLOAT);
 		attr.set_length(4);
 		pos ++;
@@ -44,7 +44,7 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	}
 	else if (sql_vector[pos] == "char" || sql_vector[pos] == "varchar")
 	{
-		cout << "SQL::ParseDataType().logging: Type: char" << endl;
+		//cout << "SQL::ParseDataType().logging: Type: char" << endl;
 		attr.set_data_type(T_CHAR);
 		pos ++;
 		if (sql_vector[pos] == "(") pos ++;
@@ -93,7 +93,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 	unsigned int pos = 2;
 	if (sql_vector.size() <= pos) throw SyntaxErrorException();
 	
-	cout << "SQLCreateTable::Parse().logging: Table Name: " << sql_vector[pos] << endl;
+	//cout << "SQLCreateTable::Parse().logging: Table Name: " << sql_vector[pos] << endl;
 	tb_name_ = sql_vector[pos];
 	pos ++;
 
@@ -108,7 +108,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 		is_attr = false;
 		if (sql_vector[pos] != "primary")
 		{
-			cout << "SQLCreateTable::Parse().logging: Column: " << sql_vector[pos] << endl;
+			//cout << "SQLCreateTable::Parse().logging: Column: " << sql_vector[pos] << endl;
 			Attribute attr;
 			attr.set_attr_name(sql_vector[pos]);
 			pos++;
@@ -129,7 +129,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 				if ((*att).get_attr_name() == sql_vector[pos])
 				{
 					(*att).set_attr_type(1);
-					cout << "SQLCreateTable::Parse().logging: Primary Key:" << sql_vector[pos] << endl;
+					//cout << "SQLCreateTable::Parse().logging: Primary Key:" << sql_vector[pos] << endl;
 				}
 			}
 			pos ++;
@@ -154,21 +154,21 @@ void SQLCreateIndex::Parse(vector<string> sql_vector)
 	unsigned int pos = 2;
 	if (sql_vector.size() <= pos) throw SyntaxErrorException();
 	
-	cout << "SQLCreateIndex::Parse().logging: Index Name: " << sql_vector[pos] << endl;
+	//cout << "SQLCreateIndex::Parse().logging: Index Name: " << sql_vector[pos] << endl;
 	index_name_ = sql_vector[pos];
 	pos ++;
 	
 	if (boost::algorithm::to_lower_copy(sql_vector[pos]) != "on") throw SyntaxErrorException();
 	pos ++;
 
-	cout << "SQLCreateIndex::Parse().logging: Table Name: " << sql_vector[pos] << endl;
+	//cout << "SQLCreateIndex::Parse().logging: Table Name: " << sql_vector[pos] << endl;
 	tb_name_ = sql_vector[pos];
 	pos ++;
 
 	if (boost::algorithm::to_lower_copy(sql_vector[pos]) != "(") throw SyntaxErrorException();
 	pos ++;
 
-	cout << "SQLCreateIndex::Parse().logging:: Column Name: " << sql_vector[pos] << endl;
+	//cout << "SQLCreateIndex::Parse().logging:: Column Name: " << sql_vector[pos] << endl;
 	col_name_ = sql_vector[pos];
 	pos ++;
 
@@ -189,7 +189,7 @@ void SQLDropDatabase::Parse(vector<string> sql_vector)
 	if (sql_vector.size() <= 2) throw SyntaxErrorException();
 	else
 	{
-		cout << "SQLDropDatabase::Parse().logging: DB Name: " << sql_vector[2] << endl;
+		//cout << "SQLDropDatabase::Parse().logging: DB Name: " << sql_vector[2] << endl;
 		db_name_ = sql_vector[2];
 	}
 }
@@ -235,7 +235,7 @@ void SQLUse::Parse(vector<string> sql_vector)
 	if (sql_vector.size() <= 1) throw SyntaxErrorException();
 	else
 	{
-		cout << "SQLUse::Parse().logging: DB Name: " << sql_vector[1] << endl;
+		//cout << "SQLUse::Parse().logging: DB Name: " << sql_vector[1] << endl;
 		db_name_ = sql_vector[1];
 	}
 }
