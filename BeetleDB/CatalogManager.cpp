@@ -20,7 +20,7 @@ vector<Database>& CatalogManager::GetDBs(){ return dbs_; }
 Database* CatalogManager::GetDB(string db_name)
 {
 	for (auto db = dbs_.begin(); db != dbs_.end(); db++)
-		if ((*db).get_db_name() == db_name) 
+		if (db->get_db_name() == db_name) 
 			return &(*db);    //some problem: exception?
 	return NULL;
 }
@@ -35,7 +35,7 @@ void CatalogManager::ReadArchiveFile()
 	{
 		ifstream ifs;
 		ifs.open(file_name.c_str(), ios::binary); /* open catalog with binary code */
-		boost::archive::binary_iarchive iar(ifs); /* iarchive file (unzip) */
+		boost::archive::binary_iarchive iar( ifs ); /* iarchive file (unzip) */
 		iar >> (*this);    /* asign to current catalog_m_; */
 		ifs.close();
 	}
@@ -90,7 +90,8 @@ void Database::CreateTable(SQLCreateTable& st)
 {
 	int record_length = 0;
 	Table tb;
-	for (auto attr = st.GetAttributes().begin(); attr != st.GetAttributes().end(); attr++)
+	vector<Attribute> attrs = st.GetAttributes();
+	for (auto attr = attrs.begin(); attr != attrs.end(); attr++)
 	{
 		tb.AddAttribute((*attr));
 		record_length += (*attr).get_length();

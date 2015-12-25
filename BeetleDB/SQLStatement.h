@@ -134,7 +134,7 @@ private:
 
 typedef	struct
 {
-	int data_type_;
+	int data_type;
 	string value;
 }SQLValue;
 
@@ -144,7 +144,7 @@ class SQLInsert: public SQL
 public:
 	SQLInsert(vector<string> sql_vector);
 	string get_tb_name();
-	vector<SQLValue>& GetValues();  //??reference
+	vector<SQLValue>& GetValues();  //reference
 	void Parse(vector<string> sql_vector);
 private:
 	string tb_name_;

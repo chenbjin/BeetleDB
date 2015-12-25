@@ -28,7 +28,7 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	boost::algorithm::to_lower(sql_vector[pos]);
 	if (sql_vector[pos] == "int")
 	{
-		cout << "logging: Type: int" << endl;
+		cout << "SQL::ParseDataType().logging: Type: int" << endl;
 		attr.set_data_type(T_INT);
 		attr.set_length(4);
 		pos ++;
@@ -36,7 +36,7 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	}
 	else if (sql_vector[pos] == "float")
 	{
-		cout << "logging: Type: float" << endl;
+		cout << "SQL::ParseDataType().logging: Type: float" << endl;
 		attr.set_data_type(T_FLOAT);
 		attr.set_length(4);
 		pos ++;
@@ -44,8 +44,11 @@ int SQL::ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int 
 	}
 	else if (sql_vector[pos] == "char" || sql_vector[pos] == "varchar")
 	{
-		cout << "logging: Type: char" << endl;
+		cout << "SQL::ParseDataType().logging: Type: char" << endl;
 		attr.set_data_type(T_CHAR);
+		pos ++;
+		if (sql_vector[pos] == "(") pos ++;
+		attr.set_length(atoi(sql_vector[pos].c_str()));
 		pos ++;
 		if (sql_vector[pos] == ")") pos ++;
 		if (sql_vector[pos] == ",") pos ++;
@@ -68,7 +71,7 @@ void SQLCreateDatabase::Parse(vector<string> sql_vector)
 	if (sql_vector.size() <= 2) throw SyntaxErrorException();
 	else
 	{
-		cout << "logging: DB Name: " << sql_vector[2] << endl;
+		//cout << "logging: DB Name: " << sql_vector[2] << endl;
 		db_name_ = sql_vector[2];
 	}
 }
@@ -90,7 +93,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 	unsigned int pos = 2;
 	if (sql_vector.size() <= pos) throw SyntaxErrorException();
 	
-	cout << "logging: Table Name: " << sql_vector[pos] << endl;
+	cout << "SQLCreateTable::Parse().logging: Table Name: " << sql_vector[pos] << endl;
 	tb_name_ = sql_vector[pos];
 	pos ++;
 
@@ -105,7 +108,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 		is_attr = false;
 		if (sql_vector[pos] != "primary")
 		{
-			cout << "logging: Column: " << sql_vector[pos] << endl;
+			cout << "SQLCreateTable::Parse().logging: Column: " << sql_vector[pos] << endl;
 			Attribute attr;
 			attr.set_attr_name(sql_vector[pos]);
 			pos++;
@@ -126,7 +129,7 @@ void SQLCreateTable::Parse(vector<string> sql_vector)
 				if ((*att).get_attr_name() == sql_vector[pos])
 				{
 					(*att).set_attr_type(1);
-					cout << "logging: Primary Key:" << sql_vector[pos] << endl;
+					cout << "SQLCreateTable::Parse().logging: Primary Key:" << sql_vector[pos] << endl;
 				}
 			}
 			pos ++;
@@ -151,21 +154,21 @@ void SQLCreateIndex::Parse(vector<string> sql_vector)
 	unsigned int pos = 2;
 	if (sql_vector.size() <= pos) throw SyntaxErrorException();
 	
-	cout << "logging: Index Name: " << sql_vector[pos] << endl;
+	cout << "SQLCreateIndex::Parse().logging: Index Name: " << sql_vector[pos] << endl;
 	index_name_ = sql_vector[pos];
 	pos ++;
 	
 	if (boost::algorithm::to_lower_copy(sql_vector[pos]) != "on") throw SyntaxErrorException();
 	pos ++;
 
-	cout << "logging: Table Name: " << sql_vector[pos] << endl;
+	cout << "SQLCreateIndex::Parse().logging: Table Name: " << sql_vector[pos] << endl;
 	tb_name_ = sql_vector[pos];
 	pos ++;
 
 	if (boost::algorithm::to_lower_copy(sql_vector[pos]) != "(") throw SyntaxErrorException();
 	pos ++;
 
-	cout << "logging:: Column Name: " << sql_vector[pos] << endl;
+	cout << "SQLCreateIndex::Parse().logging:: Column Name: " << sql_vector[pos] << endl;
 	col_name_ = sql_vector[pos];
 	pos ++;
 
@@ -186,7 +189,7 @@ void SQLDropDatabase::Parse(vector<string> sql_vector)
 	if (sql_vector.size() <= 2) throw SyntaxErrorException();
 	else
 	{
-		cout << "logging: DB Name: " << sql_vector[2] << endl;
+		cout << "SQLDropDatabase::Parse().logging: DB Name: " << sql_vector[2] << endl;
 		db_name_ = sql_vector[2];
 	}
 }
@@ -232,7 +235,7 @@ void SQLUse::Parse(vector<string> sql_vector)
 	if (sql_vector.size() <= 1) throw SyntaxErrorException();
 	else
 	{
-		cout << "logging: DB Name: " << sql_vector[1] << endl;
+		cout << "SQLUse::Parse().logging: DB Name: " << sql_vector[1] << endl;
 		db_name_ = sql_vector[1];
 	}
 }
@@ -282,12 +285,12 @@ void SQLInsert::Parse(vector<string> sql_vector)
 		if (val[0] == '\'' || val[0] == '\"')
 		{
 			val.assign(val, 1, val.length()-2);
-			sql_value.data_type_ = 2;
+			sql_value.data_type = 2;
 		}
 		else
 		{
-			if (val.find('.') == string::npos) sql_value.data_type_ = 0;
-			else sql_value.data_type_ = 1;
+			if (val.find('.') == string::npos) sql_value.data_type = 0;
+			else sql_value.data_type = 1;
 		}
 		sql_value.value = val;
 		values_.push_back(sql_value);

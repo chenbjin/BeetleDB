@@ -6,7 +6,10 @@
 //
 #include <iostream>
 #include <string>
+
 #include <boost/algorithm/string.hpp>
+#include <boost/timer.hpp>
+
 #include "Interpreter.h"
 using namespace std;
 
@@ -43,9 +46,9 @@ int main()
 			if (line == "") { continue; } /* Only is an empty input line */
 			sql += "\n" + string(line);
 		}
-		
+		boost::timer ter;
 		BeetleInterpreter.ExecSQL(sql);  /* Execute sql statement */
-		cout << endl;
+		cout << "(" << ter.elapsed() << " sec)" << endl;
 	}
 	system("pause");
 	return 0;

@@ -18,7 +18,7 @@
 
 using namespace std;
 
-Interpreter::Interpreter(void) : sql_type_(-1)
+Interpreter::Interpreter() : sql_type_(-1)
 {
 	string path;
 	if (getenv("DBHOME"))
@@ -114,8 +114,8 @@ void Interpreter::GetSQLType()
 			return;
 		}
 		boost::algorithm::to_lower(sql_vector_[1]);
-		if (sql_vector_[1] == "database") { sql_type_ = 40; } /* SHOW DATABASES */
-		else if (sql_vector_[1] == "table") { sql_type_ = 41; } /* SHOW TABLES */
+		if (sql_vector_[1] == "databases") { sql_type_ = 40; } /* SHOW DATABASES */
+		else if (sql_vector_[1] == "tables") { sql_type_ = 41; } /* SHOW TABLES */
 		else { sql_type_ = -1; }	
 	}
 	else if (sql_vector_[0] == "drop")
@@ -180,10 +180,14 @@ void Interpreter::ParseSQL()
 		}
 			break;
 		case 40:
+		{
 			api->ShowDatabases();
+		}
 			break;
 		case 41:
+		{
 			api->ShowTables();
+		}
 			break;
 		case 50:
 		{
@@ -263,18 +267,18 @@ void Interpreter::ParseSQL()
 			break;
 		}
 	}
-	catch (SyntaxErrorException& e) { cerr << "Syntax Error!" << endl; }
-	catch (NoDatabaseSelectedException& e) { cerr << "No database selected!" << endl; }
-	catch (DatabaseNotExistException& e) { cerr << "Database doesn't exist!" << endl; }
-	catch (DatabaseAlreadyExistsException& e) { cerr << "Database already exists!" << endl; }
-	catch (TableNotExistException& e) { cerr << "Table doesn't exist!" << endl; }
-	catch (TableAlreadyExistsException& e) { cerr << "Table already exists!" << endl; }
-	catch (IndexAlreadyExistsException& e) { cerr << "Index already exists!" << endl; }
-	catch (IndexNotExistException& e) { cerr << "Index doesn't exist!" << endl; }
-	catch (OneIndexEachTableException& e) { cerr << "Each table could only have one index!" << endl; }
-	catch (BPlusTreeException& e) { cerr << "BPlusTree exception!" << endl; }
-	catch (IndexMustBeCreatedOnPrimaryKeyException& e) { cerr << "Index must be created on primary key!" << endl; }
-	catch (PrimaryKeyConflictException& e) { cerr << "Primary key conflicts!" << endl; }
+	catch (SyntaxErrorException& e) { cerr << "Error: Syntax Error!" << endl; }
+	catch (NoDatabaseSelectedException& e) { cerr << "Error: No database selected." << endl; }
+	catch (DatabaseNotExistException& e) { cerr << "Error: Database doesn't exist!" << endl; }
+	catch (DatabaseAlreadyExistsException& e) { cerr << "Error: Database already exists!" << endl; }
+	catch (TableNotExistException& e) { cerr << "Error: Table doesn't exist!" << endl; }
+	catch (TableAlreadyExistsException& e) { cerr << "Error: Table already exists!" << endl; }
+	catch (IndexAlreadyExistsException& e) { cerr << "Error: Index already exists!" << endl; }
+	catch (IndexNotExistException& e) { cerr << "Error: Index doesn't exist!" << endl; }
+	catch (OneIndexEachTableException& e) { cerr << "Error: Each table could only have one index!" << endl; }
+	catch (BPlusTreeException& e) { cerr << "Error: BPlusTree exception!" << endl; }
+	catch (IndexMustBeCreatedOnPrimaryKeyException& e) { cerr << "Error: Index must be created on primary key!" << endl; }
+	catch (PrimaryKeyConflictException& e) { cerr << "Error: Primary key conflicts!" << endl; }
 }
 
 void Interpreter::ExecSQL(string statement)

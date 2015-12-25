@@ -126,6 +126,7 @@ void API::CreateTable(SQLCreateTable& statement)
 
 void API::CreateIndex(SQLCreateIndex& statement)
 {
+	cout << "Creating Index: " << statement.get_index_name() << endl;
 	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
 	
 	Database *db = catalog_m_->GetDB(current_db_);
@@ -139,11 +140,11 @@ void API::CreateIndex(SQLCreateIndex& statement)
 
 void API::ShowDatabases()
 {
-	cout << "here" << endl;
+	//cout << "here" << endl;
 	vector<Database> dbs = catalog_m_->GetDBs();
 	if (dbs.size() == 0)
 	{
-		cout << "No databases exist now." <<endl;
+		cout << "No databases exist now." << endl;
 		cout << "Use 'create database' command to create a new database." << endl;
 		return;
 	}
@@ -154,6 +155,7 @@ void API::ShowDatabases()
 	for (auto db = dbs.begin(); db != dbs.end(); db++)
 		cout << "| " << setw(18) << (*db).get_db_name() << " |" << endl;
 	cout << "+--------------------+" << endl;
+	cout << dbs.size() << " row in set ";
 }
 
 void API::ShowTables()
@@ -161,6 +163,12 @@ void API::ShowTables()
 	if (current_db_.size() == 0) throw NoDatabaseSelectedException();
 	Database *db = catalog_m_->GetDB(current_db_);
 	if (db == NULL) throw DatabaseNotExistException();
+	if (db->GetTables().size() == 0)
+	{
+		cout << "No table exist now." << endl;
+		cout << "Use 'create table' command to create a new table." << endl;
+		return;
+	}
 	cout << setiosflags(ios::left) << endl;
 	cout << "+------------------------+" << endl;
 	cout << "| " << setw(22) << "Tables_in_"+ current_db_ << " |" << endl;
@@ -267,6 +275,7 @@ void API::DropIndex(SQLDropIndex& statement)
 
 void API::Use(SQLUse& statement)
 {
+	cout <<"Reading table information for completion of table and column name" << endl;
 	Database *db = catalog_m_->GetDB(statement.get_db_name());
 	if (db == NULL) throw DatabaseNotExistException();
 
@@ -278,6 +287,7 @@ void API::Use(SQLUse& statement)
 	}
 	current_db_ = statement.get_db_name();
 	buffer_m_ = new BufferManager(path_);
+	cout << endl << "Database changed" << endl;
 }
 
 void API::Insert(SQLInsert& statement)
