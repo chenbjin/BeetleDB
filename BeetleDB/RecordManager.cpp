@@ -408,7 +408,7 @@ void RecordManager::Update(SQLUpdate& st)
 {
 	Table *tb = catalog_m_->GetDB(db_name_)->GetTable(st.get_tb_name());
 
-	vector<int> indices;
+	vector<int> indices; //all index
 	vector<TKey> tuple;
 	int primary_key_index = -1;
 	int affect_index = -1;
@@ -469,7 +469,7 @@ void RecordManager::Update(SQLUpdate& st)
 			for (int k = 0; k < st.GetWheres().size(); k++)
 			{
 				SQLWhere where = st.GetWheres()[k];
-				if (!SatisfyWhere(tb, tuple, where)) sats = false;
+				if (!SatisfyWhere(tb, tp, where)) sats = false;
 			}
 			if (sats)
 			{
@@ -498,7 +498,7 @@ void RecordManager::Update(SQLUpdate& st)
 						if (tb->GetAttributes()[i].get_attr_name() == tb->GetIndex(0)->get_attr_name())
 							idx = i;
 					}
-					tree.Add(tuple[idx], block_num, j);
+					tree.Add(tp[idx], block_num, j);
 				}
 			}
 		}

@@ -60,12 +60,16 @@ void CatalogManager::CreateDatabase(string dbname)
 
 void CatalogManager::DeleteDatabase(string dbname)
 {
+	for (auto i = 0; i < dbs_.size(); i++)
+		if (dbs_[i].get_db_name() == dbname)
+			dbs_.erase(dbs_.begin() + i);
+	/*
 	if (dbs_.size() == 0) return;
-	for (auto db = dbs_.begin(); db != dbs_.end() ; db++)
+	for (auto db = dbs_.begin(); db != dbs_.end() ; db++) // error happened! should validate! 
 	{
 		if (db->get_db_name() == dbname)
-			dbs_.erase(db);  /* should validate! */
-	}
+			dbs_.erase(db);  
+	}*/
 }
 
 /* ---------------- Database ------------ */

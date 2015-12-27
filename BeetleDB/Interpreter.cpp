@@ -113,7 +113,12 @@ void Interpreter::GetSQLType()
 		boost::algorithm::to_lower(sql_vector_[1]);
 		if (sql_vector_[1] == "databases") { sql_type_ = 40; } /* SHOW DATABASES */
 		else if (sql_vector_[1] == "tables") { sql_type_ = 41; } /* SHOW TABLES */
-		else { sql_type_ = -1; }	
+		else 
+		{ 
+			sql_type_ = -1;
+			cout << "SyntaxError: use 'help;' to get correct command." << endl;
+			return;
+		}	
 	}
 	else if (sql_vector_[0] == "drop")
 	{
@@ -127,7 +132,12 @@ void Interpreter::GetSQLType()
 		if (sql_vector_[1] == "database") { sql_type_ = 50; } /* DROP DATABASE */
 		else if (sql_vector_[1] == "table") { sql_type_ = 51; } /* DROP TABLE */
 		else if (sql_vector_[1] == "index") { sql_type_ = 52; } /* DROP INDEX */
-		else { sql_type_ = -1; }
+		else 
+		{
+			sql_type_ = -1;
+			cout << "SyntaxError: use 'help;' to get correct command." << endl;
+			return;
+		}
 	}
 	else if (sql_vector_[0] == "use") { sql_type_ = 60; } /* USE */
 	else if (sql_vector_[0] == "insert") { sql_type_ = 70; } /* INSERT */

@@ -183,12 +183,13 @@ void API::DropDatabase(SQLDropDatabase& statement)
 	cout << "Droping database: " << statement.get_db_name() << endl;
 	bool found = false;
 
-	for (auto db = catalog_m_->GetDBs().begin(); db != catalog_m_->GetDBs().end(); db++)
+	vector<Database> dbs = catalog_m_->GetDBs();
+	for (auto db = dbs.begin(); db != dbs.end(); db++)
 	{
 		if (db->get_db_name() == statement.get_db_name())
 		{
 			found = true;
-			break;
+			//break;
 		}
 	}
 	if (found == false) throw DatabaseNotExistException();
