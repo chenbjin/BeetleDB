@@ -27,10 +27,10 @@ class SQL
 public:
 	SQL();
 	SQL(int sql_type);
-	virtual void Parse(vector<string> sql_vector) = 0;
 	int get_sql_type();
 	void set_sql_type(int sql_type);
 	int ParseDataType(vector<string> sql_vector, Attribute &attr, unsigned int pos);
+	virtual void Parse(vector<string> sql_vector) = 0;
 protected:
 	int sql_type_;
 };

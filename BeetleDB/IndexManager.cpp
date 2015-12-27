@@ -39,7 +39,6 @@ void IndexManager::CreateIndex(SQLCreateIndex& st)
 	tb->AddIndex(idx);
 
 	/* get all record and build b+ tree. */
-	cout << "get all record and build b+ tree." << endl;
 	BPlusTree tree(tb->GetIndex(0), buffer_m_, catalog_m_, db_name_);
 	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, db_name_);
 	

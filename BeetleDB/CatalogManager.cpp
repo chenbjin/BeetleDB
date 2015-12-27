@@ -60,6 +60,7 @@ void CatalogManager::CreateDatabase(string dbname)
 
 void CatalogManager::DeleteDatabase(string dbname)
 {
+	if (dbs_.size() == 0) return;
 	for (auto db = dbs_.begin(); db != dbs_.end() ; db++)
 	{
 		if (db->get_db_name() == dbname)

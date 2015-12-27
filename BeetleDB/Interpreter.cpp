@@ -49,7 +49,7 @@ vector<string> Interpreter::SplitSQL(string statement, string seg)
 
 void Interpreter::GeneralizeSQL()
 {
-		// remove newlines, tabs
+	// remove newlines, tabs
 	boost::regex reg("[\r\n\t]");
 	//string newstr(" ");
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, " ");
@@ -57,15 +57,12 @@ void Interpreter::GeneralizeSQL()
 	reg = ";.*$";
 	//string newstr(" ");
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, "");
-	
 	// remove leading spaces and trailing spaces
 	reg = "(^ +)|( +$)";
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, "");
-	
 	// remove duplicate spaces
 	reg = " +";
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, " ");
-	
 	// insert space before or after ( ) , = <> < >
 	reg = " ?(\\(|\\)|,|=|(<>)|<|>) ?";
 	sql_statement_ = boost::regex_replace(sql_statement_, reg, " $1 ");
@@ -283,9 +280,8 @@ void Interpreter::ParseSQL()
 
 void Interpreter::ExecSQL(string statement)
 {
-	sql_statement_ = statement;
-	GeneralizeSQL();
-	GetSQLType();
-	//cout << "logging: SQL statement:" << sql_statement_ << endl;
-	ParseSQL();
+	sql_statement_ = statement;  /* get SQL statement */
+	GeneralizeSQL();	/* format SQL statement */
+	GetSQLType();		/* get sql type */
+	ParseSQL();			/* construct SQL object and pass to API */
 }

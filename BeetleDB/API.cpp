@@ -326,7 +326,10 @@ void API::Delete(SQLDelete& statement)
 void API::Update(SQLUpdate& statement)
 {
 	if (current_db_.length() == 0) throw NoDatabaseSelectedException();
-	Table *tb = catalog_m_->GetDB(current_db_)->GetTable(statement.get_tb_name());
+	Database *db = catalog_m_->GetDB(current_db_);
+	if (db == NULL) throw DatabaseNotExistException();
+
+	Table *tb = db->GetTable(statement.get_tb_name());
 	if (tb == NULL) throw TableNotExistException();
 	
 	RecordManager *rm = new RecordManager(catalog_m_, buffer_m_, current_db_);

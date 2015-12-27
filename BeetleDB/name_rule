@@ -11,3 +11,21 @@
 函数注释：/*函数定义前，上一行*/
 普通注释：/*对应语句之后，同一行*/
 
+/* API code */
+10	Quit
+20	Help
+30	CreateDatabase
+31	CreateTable
+32	CreateIndex
+40	ShowDatabases
+41	ShowTables
+50	DropDatabase
+51	DropTable
+52	DropIndex
+60	Use
+70	Insert
+80	Exec
+90	Select
+100	Delete
+110	Update
+
